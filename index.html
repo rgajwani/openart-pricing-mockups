@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenArt Pricing Page Mockups</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ── Left Sidebar ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: #0d0d0d;
+    border-right: 1px solid #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid #1e1e1e;
+  }
+
+  .sidebar-logo {
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .sidebar-logo span { color: #4ade80; }
+
+  .sidebar-subtitle {
+    font-size: 11px;
+    color: #555;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 8px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #444;
+    padding: 0 4px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: #161616; }
+  .nav-item.active {
+    background: #161616;
+    border-left: 2px solid #4ade80;
+    padding-left: 10px;
+  }
+
+  .nav-item-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+    transition: color 0.15s;
+  }
+  .nav-item.active .nav-item-label { color: #4ade80; }
+  .nav-item:hover .nav-item-label { color: #aaa; }
+
+  .nav-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #ccc;
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .nav-item.active .nav-item-name { color: #fff; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid #1a1a1a;
+  }
+  .sidebar-footer p {
+    font-size: 11px;
+    color: #3a3a3a;
+    line-height: 1.5;
+  }
+
+  /* ── Main Pane ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .main-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #0d0d0d;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+    gap: 12px;
+  }
+
+  .toolbar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+    white-space: nowrap;
+  }
+  .toolbar-title strong { color: #fff; }
+
+  .toolbar-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #4ade80;
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 6px;
+    padding: 3px 10px;
+  }
+
+  .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .open-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #2a2a2a;
+    background: transparent;
+    color: #888;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .open-btn:hover { border-color: #444; color: #ccc; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #333;
+  }
+  .empty-state-icon { font-size: 40px; opacity: 0.3; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── iframe ── */
+  #preview-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    display: none;
+    background: #0a0a0a;
+  }
+  #preview-frame.visible { display: block; }
+  #empty-state { flex: 1; }
+  #empty-state.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ── Left Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" href="#">Open<span>Art</span></a>
+    <div class="sidebar-subtitle">Pricing Page Mockups</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Options</div>
+
+    <button class="nav-item" data-file="pricing-mockup-optionA.html" data-label="Option A" data-name="Inline Team Plan Block">
+      <span class="nav-item-label">Option A</span>
+      <span class="nav-item-name">Inline Team Plan Block</span>
+    </button>
+
+    <button class="nav-item" data-file="pricing-mockup-optionB.html" data-label="Option B" data-name="Integrated Row Toggle">
+      <span class="nav-item-label">Option B</span>
+      <span class="nav-item-name">Integrated Row Toggle</span>
+    </button>
+
+    <button class="nav-item" data-file="pricing-mockup-optionC.html" data-label="Option C" data-name="Teaser Strip (above plans)">
+      <span class="nav-item-label">Option C</span>
+      <span class="nav-item-name">Teaser Strip (above plans)</span>
+    </button>
+
+    <button class="nav-item" data-file="pricing-mockup-optionF.html" data-label="Option F" data-name="Teaser Strip (below plans)">
+      <span class="nav-item-label">Option F</span>
+      <span class="nav-item-name">Teaser Strip (below plans)</span>
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <p>OpenArt pricing page conversion experiment — March 2026</p>
+  </div>
+</aside>
+
+<!-- ── Main Preview Pane ── -->
+<div class="main">
+  <div class="main-toolbar">
+    <span class="toolbar-title" id="toolbar-title">Select an option to preview</span>
+    <div class="toolbar-right">
+      <a class="open-btn" id="open-btn" href="#" target="_blank" style="display:none;">Open in new tab ↗</a>
+    </div>
+  </div>
+
+  <div class="empty-state" id="empty-state">
+    <div class="empty-state-icon">◧</div>
+    <p>Select a mockup from the left to preview it here</p>
+  </div>
+
+  <iframe id="preview-frame" title="Pricing page preview"></iframe>
+</div>
+
+<script>
+  const frame = document.getElementById('preview-frame');
+  const emptyState = document.getElementById('empty-state');
+  const toolbarTitle = document.getElementById('toolbar-title');
+  const openBtn = document.getElementById('open-btn');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  // Load first option by default
+  function loadOption(file, label, name) {
+    frame.src = file;
+    frame.classList.add('visible');
+    emptyState.classList.add('hidden');
+    toolbarTitle.innerHTML = `<strong>${label}: ${name}</strong>`;
+    openBtn.href = file;
+    openBtn.style.display = 'flex';
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      loadOption(item.dataset.file, item.dataset.label, item.dataset.name);
+    });
+  });
+
+  // Auto-select Option A on load
+  const first = document.querySelector('.nav-item');
+  first.classList.add('active');
+  loadOption(first.dataset.file, first.dataset.label, first.dataset.name);
+</script>
+
+</body>
+</html>
