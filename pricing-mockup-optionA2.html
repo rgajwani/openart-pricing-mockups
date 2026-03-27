@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenArt Pricing - Option A: Inline Team Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+
+  /* ── Nav ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid #1a1a1a;
+    background: #0a0a0a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-left { display: flex; align-items: center; gap: 24px; }
+  .nav-logo {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: #4ade80; }
+  .nav-links { display: flex; gap: 16px; }
+  .nav-links a {
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-create { background: #4ade80; color: #000; }
+  .btn-create:hover { background: #22c55e; }
+  .btn-signin { background: transparent; color: #ccc; border: 1px solid #333; }
+  .btn-signup { background: #fff; color: #000; }
+
+  /* ── Page ── */
+  .page { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .page-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  /* ── Billing Toggle ── */
+  .billing-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .billing-toggle {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border-radius: 40px;
+    padding: 4px;
+    border: 1px solid #2a2a2a;
+  }
+  .billing-btn {
+    padding: 8px 20px;
+    border-radius: 36px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #888;
+    transition: all 0.25s;
+  }
+  .billing-btn.active {
+    background: #2a2a2a;
+    color: #fff;
+  }
+  .billing-badge {
+    display: inline-block;
+    background: #c6f221;
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── Quote ── */
+  .quote {
+    text-align: center;
+    font-size: 13px;
+    color: #6b7280;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+
+  /* ── Promo Banner ── */
+  .promo-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(90deg, rgba(74,222,128,0.08) 0%, rgba(74,222,128,0.15) 50%, rgba(74,222,128,0.08) 100%);
+    border: 1px solid rgba(74,222,128,0.3);
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: 0 auto 32px;
+    max-width: 560px;
+    cursor: pointer;
+  }
+  .promo-banner:hover { border-color: rgba(74,222,128,0.5); }
+  .promo-icon { font-size: 16px; }
+  .promo-text { font-size: 13px; font-weight: 600; color: #4ade80; }
+
+  /* ── Plan Cards Grid ── */
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .plan-card {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .plan-card:hover { border-color: #3a3a3a; }
+  .plan-card.highlighted {
+    border-color: #4ade80;
+    box-shadow: 0 0 20px rgba(74,222,128,0.08);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-popular { background: #ec4899; color: #fff; }
+  .badge-value { background: #c6f221; color: #000; }
+
+  .plan-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .price-old {
+    font-size: 18px;
+    color: #555;
+    text-decoration: line-through;
+  }
+  .price-current {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .price-period {
+    font-size: 13px;
+    color: #888;
+  }
+
+  .plan-cta {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    margin: 16px 0;
+    transition: all 0.2s;
+    background: #fff;
+    color: #000;
+  }
+  .plan-cta:hover { background: #e0e0e0; }
+  .plan-cta.cta-green { background: #4ade80; color: #000; }
+  .plan-cta.cta-green:hover { background: #22c55e; }
+
+  .plan-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .plan-credits {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.15);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4ade80;
+    margin-bottom: 6px;
+  }
+  .add-credits {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #4ade80;
+    margin-bottom: 16px;
+    padding-left: 2px;
+  }
+
+  .plan-features { list-style: none; flex: 1; }
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: #ccc;
+    padding: 5px 0;
+    line-height: 1.4;
+  }
+  .plan-features li .check {
+    color: #4ade80;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Bottom Two-Column Row (Extra Credit + Team Plan) ── */
+  .addon-wrapper {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+    align-items: stretch;
+  }
+
+  .addon-section {
+    flex: 1;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-left: 4px solid #4ade80;
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .addon-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4ade80;
+    margin-bottom: 8px;
+  }
+  .addon-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .addon-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .addon-title span:first-child {
+    font-size: 16px;
+    color: #ccc;
+  }
+  .addon-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .addon-period {
+    font-size: 13px;
+    color: #888;
+  }
+  .addon-learn-more {
+    font-size: 13px;
+    color: #4ade80;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .addon-selector-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .addon-multiplier {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #4ade80;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+  }
+  .addon-credits-select {
+    flex: 1;
+    padding: 10px 14px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M3 5l3 3 3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .addon-credits-select:hover { border-color: #444; }
+  .addon-cta {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #333;
+    background: transparent;
+    color: #ccc;
+    margin-bottom: 14px;
+    transition: all 0.2s;
+  }
+  .addon-cta:hover { border-color: #555; color: #fff; }
+  .addon-footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #888;
+  }
+  .addon-footer .check-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .addon-footer .check-text .check { color: #4ade80; font-size: 14px; }
+
+  /* ── Team Plan Teaser ── */
+  .team-teaser {
+    flex: 1;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-left: 4px solid #3b82f6;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .team-teaser-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b82f6;
+    margin-bottom: 8px;
+  }
+  .team-teaser-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .team-teaser-desc {
+    font-size: 14px;
+    color: #999;
+    line-height: 1.65;
+    margin-bottom: 24px;
+    flex: 1;
+  }
+  .team-teaser-cta {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #fff;
+    color: #000;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .team-teaser-cta:hover { background: #e0e0e0; }
+
+  /* ── Compare Features Table ── */
+  .compare-section { margin-top: 48px; }
+  .compare-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 24px;
+    background: none;
+    border: none;
+    width: 100%;
+  }
+  .compare-toggle:hover { color: #4ade80; }
+  .compare-arrow { transition: transform 0.3s; }
+  .compare-arrow.open { transform: rotate(180deg); }
+
+  .compare-table-wrapper { overflow-x: auto; }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .compare-table th {
+    text-align: center;
+    padding: 12px 16px;
+    font-weight: 700;
+    color: #fff;
+    font-size: 15px;
+    border-bottom: 1px solid #2a2a2a;
+    position: sticky;
+    top: 0;
+    background: #0a0a0a;
+  }
+  .compare-table th:first-child { text-align: left; }
+  .compare-table th .sub-btn {
+    display: block;
+    margin: 8px auto 0;
+    padding: 6px 20px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #444;
+    background: transparent;
+    color: #ccc;
+    transition: all 0.2s;
+  }
+  .compare-table th .sub-btn:hover { border-color: #888; color: #fff; }
+  .compare-table th .sub-btn.current { background: #222; border-color: #555; color: #fff; }
+
+  .compare-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #1a1a1a;
+    text-align: center;
+    color: #ccc;
+  }
+  .compare-table td:first-child {
+    text-align: left;
+    color: #999;
+  }
+  .compare-table .section-row td {
+    padding-top: 20px;
+    font-weight: 700;
+    color: #fff;
+    font-size: 14px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .table-check { color: #4ade80; font-size: 16px; }
+  .table-dash { color: #444; }
+  .discount-badge {
+    background: #c6f221;
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .plans-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .addon-wrapper { flex-direction: column; }
+  }
+  @media (max-width: 640px) {
+    .plans-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Hidden helper ── */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav class="nav">
+  <div class="nav-left">
+    <a class="nav-logo" href="#">Open<span>Art</span></a>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Assets</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="btn-nav btn-create">Create</button>
+    <button class="btn-nav btn-signin">Sign in</button>
+    <button class="btn-nav btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<div class="page">
+  <h1 class="page-title">Pricing</h1>
+
+  <!-- ── Bottom Row: Extra Credit Add-on + Team Plan Teaser ── -->
+  <div class="addon-wrapper" style="margin-bottom: 32px;">
+
+    <!-- Extra Credit Add-on -->
+    <div class="addon-section">
+      <div class="addon-label">◆ Optional add-on</div>
+      <div class="addon-title-row">
+        <div class="addon-title">
+          <span>Extra Credit</span>
+          <span class="addon-price">$15</span>
+          <span class="addon-period">/month</span>
+        </div>
+        <a class="addon-learn-more" href="#">Learn more</a>
+      </div>
+      <div class="addon-selector-row">
+        <button class="addon-multiplier">1x</button>
+        <select class="addon-credits-select">
+          <option>5,000 credits / month</option>
+          <option>10,000 credits / month</option>
+          <option>15,000 credits / month</option>
+        </select>
+      </div>
+      <button class="addon-cta">Subscribe To Advanced To Unlock</button>
+      <div class="addon-footer">
+        <span class="check-text"><span class="check">✓</span> Flexible Usage</span>
+        <span class="check-text"><span class="check">✓</span> 10% off credit packs with Wonder plan</span>
+      </div>
+    </div>
+
+    <!-- Team Plan Teaser -->
+    <div class="team-teaser">
+      <div class="team-teaser-label">◈ For teams &amp; organizations</div>
+      <div class="team-teaser-name">Team and Enterprise Plans</div>
+      <p class="team-teaser-desc">OpenArt gives creative teams the AI tools they need to move faster &mdash; shared credits, collaborative workspaces, and 100+ model integrations. Whether you're a small agency or a global enterprise, we have a plan that scales with you.</p>
+      <button class="team-teaser-cta" onclick="window.location.href='#'">Explore Team and Enterprise plans</button>
+    </div>
+
+  </div>
+
+  <!-- ── Billing Toggle (centered, no audience toggle above) ── -->
+  <div class="billing-toggle-wrapper">
+    <div class="billing-toggle">
+      <button class="billing-btn" data-billing="monthly">MONTHLY</button>
+      <button class="billing-btn active" data-billing="annual">ANNUALLY <span class="billing-badge">UP TO 50% OFF 🎉</span></button>
+    </div>
+  </div>
+
+  <!-- ── Quote ── -->
+  <p class="quote">"The power of imagination makes us infinite." &ndash; John Muir</p>
+
+  <!-- ── Promo Banner ── -->
+  <div class="promo-banner">
+    <span class="promo-icon">∞</span>
+    <span class="promo-text">GET UNLIMITED &ndash; Kling 3.0, Grok Imagine Creation With Wonder Plan</span>
+  </div>
+
+  <!-- ── Individual Plan Cards ── -->
+  <div class="plans-grid">
+
+    <!-- Essential -->
+    <div class="plan-card">
+      <div class="plan-name">Essential</div>
+      <div class="plan-price">
+        <span class="price-old">$14</span>
+        <span class="price-current">$7</span>
+        <span class="price-period">/Seat/mo</span>
+      </div>
+      <button class="plan-cta">Subscribe</button>
+      <p class="plan-desc">Start experimenting with the magic of AI creation.</p>
+      <div class="plan-credits">◆ 4,000 credits / month</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> ~Up to 4,000 images</li>
+        <li><span class="check">✓</span> ~Up to 50 videos</li>
+        <li><span class="check">✓</span> ~13 consistent characters</li>
+        <li><span class="check">✓</span> ~13 personalized models</li>
+        <li><span class="check">✓</span> ~Up to 5 One-Click Stories</li>
+        <li><span class="check">✓</span> ~8 parallel generations</li>
+        <li><span class="check">✓</span> Access to 100+ premium image, video and audio models</li>
+        <li><span class="check">✓</span> One-Click Story Creation</li>
+      </ul>
+    </div>
+
+    <!-- Advanced -->
+    <div class="plan-card">
+      <div class="plan-name">Advanced</div>
+      <div class="plan-price">
+        <span class="price-old">$29</span>
+        <span class="price-current">$14.5</span>
+        <span class="price-period">/Seat/mo</span>
+      </div>
+      <button class="plan-cta">Subscribe</button>
+      <p class="plan-desc">Unlock deeper control and create at scale.</p>
+      <div class="plan-credits">◆ 12,000 credits / month</div>
+      <div class="add-credits">🔗 Add credits as needed</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> ~Up to 12,000 images</li>
+        <li><span class="check">✓</span> ~Up to 150 videos</li>
+        <li><span class="check">✓</span> ~40 consistent characters</li>
+        <li><span class="check">✓</span> ~40 personalized models</li>
+        <li><span class="check">✓</span> ~Up to 17 One-Click Stories</li>
+        <li><span class="check">✓</span> ~16 parallel generations</li>
+        <li><span class="check">✓</span> Access to 100+ premium image, video and audio models</li>
+        <li><span class="check">✓</span> One-Click Story Creation</li>
+      </ul>
+    </div>
+
+    <!-- Infinite -->
+    <div class="plan-card highlighted">
+      <span class="plan-badge badge-popular">❤ MOST POPULAR</span>
+      <div class="plan-name">Infinite</div>
+      <div class="plan-price">
+        <span class="price-old">$56</span>
+        <span class="price-current">$28</span>
+        <span class="price-period">/Seat/mo</span>
+      </div>
+      <button class="plan-cta">Subscribe</button>
+      <p class="plan-desc">Create at full speed with uninterrupted flow.</p>
+      <div class="plan-credits">◆ 24,000 credits / month</div>
+      <div class="add-credits">🔗 Add credits as needed</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> ~Up to 24,000 images</li>
+        <li><span class="check">✓</span> ~Up to 300 videos</li>
+        <li><span class="check">✓</span> ~80 consistent characters</li>
+        <li><span class="check">✓</span> ~80 personalized models</li>
+        <li><span class="check">✓</span> ~Up to 34 One-Click Stories</li>
+        <li><span class="check">✓</span> ~32 parallel generations</li>
+        <li><span class="check">✓</span> Access to 100+ premium image, video and audio models</li>
+        <li><span class="check">✓</span> One-Click Story Creation</li>
+        <li><span class="check">✓</span> Priority support</li>
+      </ul>
+    </div>
+
+    <!-- Wonder -->
+    <div class="plan-card">
+      <span class="plan-badge badge-value">★ BEST VALUE</span>
+      <div class="plan-name">Wonder</div>
+      <div class="plan-price">
+        <span class="price-old">$240</span>
+        <span class="price-current">$120</span>
+        <span class="price-period">/Seat/mo</span>
+      </div>
+      <button class="plan-cta">Subscribe</button>
+      <p class="plan-desc">Imagine without limits. Make your wonder.</p>
+      <div class="plan-credits">◆ 106,000 credits / month</div>
+      <div class="add-credits">🔗 Add credits as needed</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> ~Up to 106,000 images</li>
+        <li><span class="check">✓</span> ~Up to 1,300 videos</li>
+        <li><span class="check">✓</span> ~353 consistent characters</li>
+        <li><span class="check">✓</span> ~353 personalized models</li>
+        <li><span class="check">✓</span> ~Up to 150 One-Click Stories</li>
+        <li><span class="check">✓</span> ~32 parallel generations</li>
+        <li><span class="check">✓</span> 10% off credit packs</li>
+        <li><span class="check">✓</span> Access to 100+ premium image, video and audio models</li>
+        <li><span class="check">✓</span> One-Click Story Creation</li>
+        <li><span class="check">✓</span> Priority support</li>
+        <li><span class="check">✓</span> Unlimited use of select models</li>
+        <li><span class="check">✓</span> Kling 3.0</li>
+        <li><span class="check">✓</span> Grok Imagine</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Compare All Features -->
+  <div class="compare-section">
+    <button class="compare-toggle" onclick="toggleCompare()">
+      Compare all features <span class="compare-arrow" id="compareArrow">▲</span>
+    </button>
+    <div id="compareTable" class="compare-table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Free<br><button class="sub-btn current">Current Plan</button></th>
+            <th>Essential<br><button class="sub-btn">Subscribe</button></th>
+            <th>Advanced<br><button class="sub-btn">Subscribe</button></th>
+            <th>Infinite<br><button class="sub-btn">Subscribe</button></th>
+            <th>Wonder<br><button class="sub-btn">Subscribe</button></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="6">📊 Credits Usage</td></tr>
+          <tr>
+            <td>Credits</td>
+            <td>One-time 40 trial credits for 7 days</td>
+            <td>4,000 credits/mo</td>
+            <td>12,000 credits/mo</td>
+            <td>24,000 credits/mo</td>
+            <td>106,000 credits/mo</td>
+          </tr>
+          <tr>
+            <td>Add-on Credit Packs</td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span> <span class="discount-badge">10% OFF</span></td>
+          </tr>
+          <tr>
+            <td>Number of Images</td>
+            <td>~40</td>
+            <td>~4,000/mo</td>
+            <td>~12,000/mo</td>
+            <td>~24,000/mo</td>
+            <td>~106,000/mo</td>
+          </tr>
+          <tr>
+            <td>Number of Videos</td>
+            <td>0</td>
+            <td>~50/mo</td>
+            <td>~150/mo</td>
+            <td>~300/mo</td>
+            <td>~1,300/mo</td>
+          </tr>
+          <tr class="section-row"><td colspan="6">⚡ Generation</td></tr>
+          <tr>
+            <td>Parallel Generations</td>
+            <td>4</td>
+            <td>8</td>
+            <td>16</td>
+            <td>32</td>
+            <td>32</td>
+          </tr>
+          <tr>
+            <td>Consistent Characters</td>
+            <td><span class="table-dash">—</span></td>
+            <td>13</td>
+            <td>40</td>
+            <td>80</td>
+            <td>353</td>
+          </tr>
+          <tr>
+            <td>Personalized Models</td>
+            <td><span class="table-dash">—</span></td>
+            <td>13</td>
+            <td>40</td>
+            <td>80</td>
+            <td>353</td>
+          </tr>
+          <tr>
+            <td>One-Click Stories</td>
+            <td><span class="table-dash">—</span></td>
+            <td>~5</td>
+            <td>~17</td>
+            <td>~34</td>
+            <td>~150</td>
+          </tr>
+          <tr class="section-row"><td colspan="6">✨ Features</td></tr>
+          <tr>
+            <td>100+ Premium Models</td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+          </tr>
+          <tr>
+            <td>One-Click Story Creation</td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Priority Support</td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-check">✓</span></td>
+            <td><span class="table-check">✓</span></td>
+          </tr>
+          <tr>
+            <td>Unlimited Select Models</td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-dash">—</span></td>
+            <td><span class="table-check">✓</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  // ── Billing toggle ──
+  const billingBtns = document.querySelectorAll('.billing-btn');
+  billingBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      billingBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // In a real implementation, this would swap prices
+    });
+  });
+
+  // ── Compare table toggle ──
+  function toggleCompare() {
+    const table = document.getElementById('compareTable');
+    const arrow = document.getElementById('compareArrow');
+    if (table.style.display === 'none') {
+      table.style.display = 'block';
+      arrow.classList.add('open');
+    } else {
+      table.style.display = 'none';
+      arrow.classList.remove('open');
+    }
+  }
+</script>
+
+</body>
+</html>
